@@ -81,24 +81,43 @@ function getItemsFromStorage () {
     return itemsFromStorage;
 }
 
-function removeItem (e) {
+function onClickItem (e) {
     if (e.target.parentElement.classList.contains('remove-item')) {
+        removeItem(e.target.parentElement.parentElement);
+    }
+}
 
-        if (confirm('Are you sure?')) {
-            e.target.parentElement.parentElement.remove()
+function removeItem (item) {
+    if (confirm('Are you sure ?')) {
+        // Remove item from DOM
+        item.remove();
 
-            checkUI();
-        }
-    };
+        // Remove item from storage
+        removeItemFromStarage(item.textContent)
+
+        checkUI();
+    }  
+}
+
+function removeItemFromStarage (item) {
+    let itemsFromStorage = getItemsFromStorage();
+
+    // Filter out item to be removed
+    itemsFromStorage = itemsFromStorage.filter((i) => i !== item);
+
+    // Reset to localStorage
+    localStorage.setItem('items', JSON.stringify(itemsFromStorage))
 }
 
 function clearItems (e) {
     // itemList.innerHTML = '';   // первый вариант
     while (itemList.firstChild) {
-        itemList.removeChild(itemList.firstChild)
-
-        checkUI();
+        itemList.removeChild(itemList.firstChild)  
     }
+    // Clear from Local Storage
+    localStorage.removeItem('items');
+
+    checkUI();
 }
 
 function filterItems (e) {
@@ -118,7 +137,7 @@ function filterItems (e) {
 
 function checkUI () {
     const items = itemList.querySelectorAll('li');
-    console.log(items)
+    // console.log(items)
     if (items.length === 0) {
         clearBtn.style.display = 'none';
         itemFilter.style.display = 'none';
@@ -132,7 +151,7 @@ function checkUI () {
 function init () {
     // Event listeners
     itemForm.addEventListener('submit' , onAddItemSubmit);
-    itemList.addEventListener('click' , removeItem);
+    itemList.addEventListener('click' , onClickItem);
     clearBtn.addEventListener('click', clearItems);
     itemFilter.addEventListener('input', filterItems);
     document.addEventListener('DOMContentLoaded', displayItems)
