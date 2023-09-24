@@ -1,3 +1,3 @@
 # Shopping List
 
-Simple Shopiing List app.
+Simple Shopping List app.
